@@ -5,8 +5,6 @@ import User from "../module/User.js";
 
 dotenv.config({ path: "./.env" });
 
-const app = express();
-
 passport.use(
   new GoogleStrategy(
     {
@@ -17,7 +15,10 @@ passport.use(
 
     async function (accessToken, refreshToken, profile, done) {
       try {
+        console.log("Google callback called");
         const alredyUser = await User.findOne({ googleId: profile.id });
+
+        console.log("profile", profile);
 
         if (!alredyUser) {
           const newUser = await User.create({
@@ -35,3 +36,19 @@ passport.use(
     },
   ),
 );
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id,done)=>{
+  try {
+    const user = await User.findById(id);
+    if(!user){
+      return done(null,false);
+    }
+    done(null,user);
+  } catch (error) {
+    done(error,null);
+  }
+});
+export default passport;

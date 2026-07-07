@@ -3,7 +3,8 @@ import HttpError from "./middleware/HttpError.js";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
 import session from "express-session";
-import passport from "passport";
+
+import passport from "./config/passport.js"
 
 import authRoutes from "./routes/authRoutes.js";
 
